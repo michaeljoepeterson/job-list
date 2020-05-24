@@ -8,6 +8,14 @@
     margin:auto;
 }
 
+.job-list-container{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    margin:auto;
+}
+
 .job-card-1{
     text-align: center;
     border-bottom: 1px solid rgba(0,0,0,0.3);
@@ -22,4 +30,27 @@
 .job-card-1 > .row > .job-card-description{
     display: flex;
     align-items: center;
+}
+
+.job-cards{
+    text-align: center;
+    width: 80%;
+}
+
+.job-card{
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+
+.job-card > .job-card-titles > .job-title{
+    font-weight: bold;
+    font-size:1.5em;
+}
+
+.job-card > .job-card-description{
+    display: flex;
+    align-items: center;
+}
+
+.job-card > .job-card-description > p{
+    text-align: start;
 }
