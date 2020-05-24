@@ -14,7 +14,12 @@
     width: 80%;
 }
 
-.job-card-1 > .job-card-titles > .job-title{
+.job-card-1 > .row > .job-card-titles > .job-title{
     font-weight: bold;
     font-size:1.5em;
+}
+
+.job-card-1 > .row > .job-card-description{
+    display: flex;
+    align-items: center;
 }
