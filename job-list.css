@@ -1,0 +1,11 @@
+/*display 1 styles */
+
+.job-list-container-1{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.job-card-1 > .job-card-titles > .job-title{
+    font-weight: bold;
+}
