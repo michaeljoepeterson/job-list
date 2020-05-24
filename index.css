@@ -1,0 +1,12 @@
+.display-list{
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    height: 50vh;
+    font-size: 30px;
+}
+
+.index-title{
+    text-align: center;
+    padding-top: 1.5em;
+}
