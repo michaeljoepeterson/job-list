@@ -44,13 +44,24 @@ MapInterface.prototype.createMap = function(){
     this.addMarkers();
 }
 
+MapInterface.prototype.positionMap = function(job){
+    var zoom = 15;
+    var center = {
+        lat:job.latitude,
+        lng:job.longitude
+    };
+
+    this.map.setCenter(center);
+    this.map.setZoom(zoom);
+}
+
 MapInterface.prototype.constructor = function(options){
     this.mapElement = document.getElementById(options.id);
     this.map;
     this.jobData = options.jobData;
     this.defaultZoom = 13;
     var locations = this.jobData ? this.getLocationData(this.jobData) : [];
-    this.locations = options.locations ? options.locations : [
+    /*this.locations = options.locations ? options.locations : [
         {
             lat:53.485450, 
             lng:-113.488751
@@ -64,5 +75,7 @@ MapInterface.prototype.constructor = function(options){
             lng:-113.492812
         }
     ]
+    */
+    this.locations = locations;
     this.createMap();
 }
