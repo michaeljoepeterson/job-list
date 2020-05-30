@@ -61,6 +61,8 @@ JobList_1.prototype.getJobs = function(){
     .then(response => {
         console.log(response);
         this.buildCards(response.data.results);
+        this.mapOptions.jobData = response.data.results;
+        this.mapInterface = new MapInterface(this.mapOptions)
     })
 
     .catch(err => {
@@ -73,9 +75,9 @@ JobList_1.prototype.constructor = function(options){
     var parentSelector = options.parentClass.startsWith('.') ? options.parentClass : '.' + options.parentClass;
     //wrap selected dom element in $ to make $ object available to class
     this.parent = $($(parentSelector)[0]);
-    this.mapInterface = new MapInterface(options.mapOptions);
-    this.mapInterface
-    console.log(this.parent);
+    this.mapOptions = options.mapOptions;
+    this.mapInterface;
+
 }
 
 JobList_1.prototype.render = function(){
@@ -94,4 +96,5 @@ function init(){
     var joblist = new JobList_1(jobptions);
 
     joblist.render();
+    
 }

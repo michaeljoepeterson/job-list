@@ -2,6 +2,25 @@ function MapInterface(options){
     this.constructor(options)
 }
 
+MapInterface.prototype.getLocationData = function(data){
+    var locations = [];
+    //handle if data passed or data.results passed
+    var results = data.results ? data.results : data;
+    for(var i = 0;i < results.length;i++){
+        var job = results[i];
+        var location = {};
+        location.lat = job.latitude;
+        location.lng = job.longitude;
+        locations.push(location);
+    }
+
+    return locations;
+}
+
+MapInterface.prototype.getInfoData = function(data){
+
+}
+
 MapInterface.prototype.createInfo = function(locations){
     var locations = locations ? locations : this.locations;
 }
@@ -28,7 +47,9 @@ MapInterface.prototype.createMap = function(){
 MapInterface.prototype.constructor = function(options){
     this.mapElement = document.getElementById(options.id);
     this.map;
+    this.jobData = options.jobData;
     this.defaultZoom = 13;
+    var locations = this.jobData ? this.getLocationData(this.jobData) : [];
     this.locations = options.locations ? options.locations : [
         {
             lat:53.485450, 
