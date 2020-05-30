@@ -15,14 +15,59 @@ MapInterface.prototype.getLocationData = function(data){
     }
 
     return locations;
-}
-
-MapInterface.prototype.getInfoData = function(data){
-
 };
 
-MapInterface.prototype.createInfo = function(locations){
-    var locations = locations ? locations : this.locations;
+
+MapInterface.prototype.getInfoData = function(data){
+    var jobInfo = [];
+    var results = data.results ? data.results : data;
+    for(var i = 0;i < results.length;i++){
+        var job = results[i];
+        var jobData = {
+            position:job.jobtitle,
+            postingDate:job.date,
+            info:job.snippet
+        };
+        jobInfo.push(jobData);
+    }
+
+    return jobInfo;
+};
+
+MapInterface.prototype.buildInfoString = function(job){
+    var infoString =  '<div class="info-window">'
+    + '<h2 class="info-position">' + job.position + '</h2>'
+    + '<h4 class="info-date">' + job.postingDate + '</h4>'
+    + '<p class="info-description">' + job.info + '</p>'
+    + '</div>'
+    ;
+
+    return infoString;
+};
+//need to add info window even listener here to avoid variable hoisting issue
+//with js
+MapInterface.prototype.addInfoWindowEvent = function(infoWindow,marker){
+    marker.addListener('click',function(){
+        infoWindow.open(this.map,marker);
+    });
+};
+
+MapInterface.prototype.addInfo = function(){
+    for(var i = 0;i < this.jobInfo.length;i++){
+
+        var job = this.jobInfo[i];
+        var infoString = this.buildInfoString(job);
+        var marker = this.markers[i];
+        var infoWindow = new google.maps.InfoWindow({
+            content: infoString
+        });
+
+        this.addInfoWindowEvent(infoWindow,marker);
+        this.infoWindows.push(infoWindow);
+
+    }   
+  
+    console.log(this.infoWindows);
 };
 
 MapInterface.prototype.addMarkers = function(locations){
@@ -42,6 +87,7 @@ MapInterface.prototype.createMap = function(){
     };
     this.map = new google.maps.Map(this.mapElement,mapOptions);
     this.addMarkers();
+    this.addInfo();
     if(this.jobData && this.jobData.length > 0){
         this.positionMap(this.jobData[0]);
     }
@@ -70,10 +116,10 @@ MapInterface.prototype.constructor = function(options){
     this.map;
     this.jobData = options.jobData;
     this.defaultZoom = 13;
-    var locations = this.jobData ? this.getLocationData(this.jobData) : [];
-
-    this.locations = locations;
+    this.locations = this.jobData ? this.getLocationData(this.jobData) : [];
+    this.jobInfo = this.jobData ? this.getInfoData(this.jobData) : [];
     this.infoWindows = [];
     this.markers = [];
+
     this.createMap();
 };
