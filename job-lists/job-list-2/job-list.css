@@ -56,6 +56,10 @@
     text-align: start;
 }
 
+.info-window > h2,h4{
+    font-size: 1em;
+}
+
 #map {
     height: 300px;
     position: sticky !important;
@@ -68,5 +72,8 @@
         width: 80%;
         height: 500px;
         margin:0 auto;
+    }
+    .info-window > h2,h4{
+        font-size: 2em;
     }
   }
