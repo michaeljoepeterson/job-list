@@ -16,7 +16,7 @@ JobList_1.prototype.initCardListener = function(card){
 
 JobList_1.prototype.setJobPosition = function(index){
     var job = this.jobData[index];
-    this.mapInterface.positionMap(job)
+    this.mapInterface.positionMap(job,index)
 };
 
 

@@ -100,13 +100,17 @@ MapInterface.prototype.createMap = function(){
     
 };
 
-MapInterface.prototype.positionMap = function(job){
+MapInterface.prototype.positionMap = function(job,index){
     var zoom = 15;
     var center = {
         lat:job.latitude,
         lng:job.longitude
     };
-
+    
+    if(index || index === 0){
+        this.infoWindows[index].open(this.maps,this.markers[index]);
+    }
+    
     this.map.setCenter(center);
     this.map.setZoom(zoom);
 };
