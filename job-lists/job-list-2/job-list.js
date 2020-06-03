@@ -2,8 +2,22 @@ function JobList_1(options){
     this.constructor(options);
 }
 
-JobList_1.prototype.initListeners = function(){
-    
+JobList_1.prototype.addScrollListener = function(){
+    $(window).scroll(function(e){
+        this.checkScroll(e);
+    }.bind(this))
+};
+
+JobList_1.prototype.checkScroll = function(event){
+    var scrolltop = $(window).scrollTop();
+    var scrollHeight = $(window).height();
+    var docHeight = $(document).height();
+    var totalScroll = scrolltop + scrollHeight;
+    var diff = Math.abs(totalScroll - docHeight);
+
+    if(diff <= 2){
+        console.log('load');
+    }
 };
 
 JobList_1.prototype.initCardListener = function(card){
@@ -97,7 +111,8 @@ JobList_1.prototype.constructor = function(options){
     this.mapInterface;
     this.jobIndex = 'job-index';
     this.jobData;
-
+    this.currentPage = 1;
+    this.addScrollListener();
 };
 
 JobList_1.prototype.render = function(){
