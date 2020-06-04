@@ -23,6 +23,8 @@ JobList_1.prototype.checkScroll = function(event){
 
 JobList_1.prototype.initCardListener = function(card){
     var self = this;
+    //remove any existing click listeners
+    card.unbind();
     card.click(function(event){
         var index = $(this).data(this.jobIndex).jobIndex;
         self.setJobPosition(index)
@@ -73,13 +75,15 @@ JobList_1.prototype.buildCards = function(data,addPage){
     let jobCards = addPage ?  $(this.jobCardsContainer) : null;
     for(var i = 0;i < data.length;i++){
         var cardData = data[i];
-        var card = this.buildSingleCard(cardData,i);
+        var card = this.buildSingleCard(cardData,this.cardIndex);
+        
         if(addPage){
             jobCards.append(card)
         }else{
             jobCard.append(card);
         }
         this.initCardListener(card);
+        this.cardIndex++;
     }
     if(!addPage){
         this.parent.append(jobCard);
@@ -103,9 +107,9 @@ JobList_1.prototype.getJobs = function(page,addPage){
     .then(response => {
         console.log(response);
         this.buildCards(response.data.results,addPage);
-        this.mapOptions.jobData = response.data.results;
-        this.mapInterface = new MapInterface(this.mapOptions);
         this.jobData = this.jobData.concat(response.data.results);
+        this.mapOptions.jobData = addPage ? this.jobData : response.data.results;
+        this.mapInterface = new MapInterface(this.mapOptions);
         this.currentPage++;
     })
 
@@ -123,6 +127,7 @@ JobList_1.prototype.constructor = function(options){
     this.mapInterface;
     this.jobIndex = 'job-index';
     this.jobData = [];
+    this.cardIndex = 0;
     this.currentPage = 1;
     this.addScrollListener();
     this.jobCardsContainer = '.job-cards';
