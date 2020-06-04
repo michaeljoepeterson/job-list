@@ -15,9 +15,14 @@ JobList_1.prototype.checkScroll = function(event){
     var totalScroll = scrolltop + scrollHeight;
     var diff = Math.abs(totalScroll - docHeight);
 
-    if(diff <= 2){
+    if(diff <= 2 && this.currentPage <= this.lastPage){
         console.log('load');
-        this.getJobs(this.currentPage,true);
+        //will need to add this to get jobs in prod
+        this.loader.removeClass(this.hideClass);
+        var self = this;
+        setTimeout(function(){
+            self.getJobs(self.currentPage,true);
+        },3000);
     }
 };
 
@@ -93,29 +98,37 @@ JobList_1.prototype.buildCards = function(data,addPage){
 //placeholder for ajax calls
 //need seperate function for appending jobs
 JobList_1.prototype.getJobs = function(page,addPage){
-    var url = 'https://job-dummy-api.herokuapp.com/api/indeed';
-    if(page){
-        url += '?page=' + page;
+    if(!this.gettingJobs){
+        this.gettingJobs = true;
+        var url = 'https://job-dummy-api.herokuapp.com/api/indeed';
+        if(page){
+            url += '?page=' + page;
+        }
+        var req = {
+            method:'GET',
+            url:url
+        };
+
+        $.ajax(req)
+
+        .then(response => {
+            console.log(response);
+            this.buildCards(response.data.results,addPage);
+            this.jobData = this.jobData.concat(response.data.results);
+            this.mapOptions.jobData = addPage ? this.jobData : response.data.results;
+            this.mapInterface = new MapInterface(this.mapOptions);
+            this.currentPage++;
+            this.loader.addClass(this.hideClass);
+            this.gettingJobs = false;
+        })
+
+        .catch(err => {
+            console.log('Error getting data: ',err);
+            this.loader.addClass(this.hideClass);
+            this.gettingJobs = false;
+        })
     }
-    var req = {
-        method:'GET',
-        url:url
-    };
-
-    $.ajax(req)
-
-    .then(response => {
-        console.log(response);
-        this.buildCards(response.data.results,addPage);
-        this.jobData = this.jobData.concat(response.data.results);
-        this.mapOptions.jobData = addPage ? this.jobData : response.data.results;
-        this.mapInterface = new MapInterface(this.mapOptions);
-        this.currentPage++;
-    })
-
-    .catch(err => {
-        console.log('Error getting data: ',err);
-    })
+    
 };
 
 JobList_1.prototype.constructor = function(options){
@@ -131,6 +144,10 @@ JobList_1.prototype.constructor = function(options){
     this.currentPage = 1;
     this.addScrollListener();
     this.jobCardsContainer = '.job-cards';
+    this.loader = $(".loader-container");
+    this.hideClass = "hide";
+    this.gettingJobs = false;
+    this.lastPage = 2;
 };
 
 JobList_1.prototype.render = function(){
