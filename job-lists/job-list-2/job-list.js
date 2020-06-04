@@ -17,6 +17,7 @@ JobList_1.prototype.checkScroll = function(event){
 
     if(diff <= 2){
         console.log('load');
+        this.getJobs(this.currentPage,true);
     }
 };
 
@@ -67,34 +68,45 @@ JobList_1.prototype.buildSingleCard = function(cardData,index){
     return card;
 };
 
-JobList_1.prototype.buildCards = function(data){
+JobList_1.prototype.buildCards = function(data,addPage){
     var jobCard = $('<div class="job-cards"></div>');
-
+    let jobCards = addPage ?  $(this.jobCardsContainer) : null;
     for(var i = 0;i < data.length;i++){
         var cardData = data[i];
         var card = this.buildSingleCard(cardData,i);
-        jobCard.append(card);
+        if(addPage){
+            jobCards.append(card)
+        }else{
+            jobCard.append(card);
+        }
         this.initCardListener(card);
     }
-    
-    this.parent.append(jobCard);
+    if(!addPage){
+        this.parent.append(jobCard);
+    }
 };
 
 //placeholder for ajax calls
-JobList_1.prototype.getJobs = function(){
+//need seperate function for appending jobs
+JobList_1.prototype.getJobs = function(page,addPage){
+    var url = 'https://job-dummy-api.herokuapp.com/api/indeed';
+    if(page){
+        url += '?page=' + page;
+    }
     var req = {
         method:'GET',
-        url:'https://job-dummy-api.herokuapp.com/api/indeed'
+        url:url
     };
 
     $.ajax(req)
 
     .then(response => {
         console.log(response);
-        this.buildCards(response.data.results);
+        this.buildCards(response.data.results,addPage);
         this.mapOptions.jobData = response.data.results;
         this.mapInterface = new MapInterface(this.mapOptions);
-        this.jobData = response.data.results;
+        this.jobData = this.jobData.concat(response.data.results);
+        this.currentPage++;
     })
 
     .catch(err => {
@@ -110,9 +122,10 @@ JobList_1.prototype.constructor = function(options){
     this.mapOptions = options.mapOptions;
     this.mapInterface;
     this.jobIndex = 'job-index';
-    this.jobData;
+    this.jobData = [];
     this.currentPage = 1;
     this.addScrollListener();
+    this.jobCardsContainer = '.job-cards';
 };
 
 JobList_1.prototype.render = function(){
